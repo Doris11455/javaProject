@@ -26,7 +26,6 @@ public class UI3 extends JFrame {
 	private JPasswordField passwordField;
 	public DataOutputStream toServer;
 	public DataInputStream fromServer;
-	public static boolean online;
 	public static String uid;
 	/**
 	 * Launch the application.
@@ -95,13 +94,12 @@ public class UI3 extends JFrame {
 						String s=fromServer.readUTF();
 						System.out.println(s);
 						if(s.equals("log in successfully!")){
-							JOptionPane.showMessageDialog(null,"success", "Log reminder", JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null,"success!", "Log reminder!", JOptionPane.INFORMATION_MESSAGE);
 							login=true;
-							online=true;
-							//setlogin(true);
+							//UserManager.login(uid);
 						}
 						else{
-							JOptionPane.showMessageDialog(null,"fail", "Log reminder", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null,"fail!", "Log reminder!", JOptionPane.ERROR_MESSAGE);
 						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

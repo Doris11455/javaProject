@@ -48,6 +48,8 @@ public class UI {
 	int count1_1=0,count1_2=0,count2_1=0,count2_2=0,count3_1=0,count3_2=0;
 	//boolean login=false;
 	public static void main(String[] args) {
+		//System.out.println("Hello,This is the sever!!");
+		//DataBase.connect();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -85,7 +87,6 @@ public class UI {
 	 */
 	public UI() throws UnknownHostException, IOException {
 		initialize();
-		//socket=new Socket("localhost",8000);
 		socket=new Socket("114.212.130.31",8000);
 	}
 
@@ -260,14 +261,13 @@ public class UI {
 		scrollPane_3.setViewportView(list);
 		
 		JButton btnNewButton = new JButton("add friends");
-		btnNewButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
+		btnNewButton.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				UI5 frame5=new UI5();
 				frame5.setVisible(true);
 			}
 		});
-		btnNewButton.setFont(new Font("微软雅黑", Font.PLAIN, 12));
 		btnNewButton.setBounds(541, 294, 116, 23);
 		panel.add(btnNewButton);
 		
@@ -411,6 +411,9 @@ public class UI {
 							toServer.writeUTF(UI3.uid);
 							String s=fromServer.readUTF();
 							System.out.println(s);
+							if(!s.equals("add jinshan praise successfully!")){
+								JOptionPane.showMessageDialog(null,"你已经点过赞了，不要重复点击!", "系统信息", JOptionPane.ERROR_MESSAGE);
+							}
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -434,6 +437,9 @@ public class UI {
 							toServer.writeUTF(UI3.uid);
 							String s=fromServer.readUTF();
 							System.out.println(s);
+							if(!s.equals("jinshan delpraise successfully!")){
+								JOptionPane.showMessageDialog(null,"你已经点过赞了，不要重复点击!", "系统信息", JOptionPane.ERROR_MESSAGE);
+							}
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -456,7 +462,9 @@ public class UI {
 							toServer.writeUTF(UI3.uid);
 							String s=fromServer.readUTF();
 							System.out.println(s);
-							
+							if(!s.equals("add youdao praise successfully!")){
+								JOptionPane.showMessageDialog(null,"你已经点过赞了，不要重复点击!", "系统信息", JOptionPane.ERROR_MESSAGE);
+							}
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -480,6 +488,9 @@ public class UI {
 							toServer.writeUTF(UI3.uid);
 							String s=fromServer.readUTF();
 							System.out.println(s);
+							if(!s.equals("youdao delpraise successfully!")){
+								JOptionPane.showMessageDialog(null,"你已经点过赞了，不要重复点击!", "系统信息", JOptionPane.ERROR_MESSAGE);
+							}
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -503,6 +514,9 @@ public class UI {
 							toServer.writeUTF(UI3.uid);
 							String s=fromServer.readUTF();
 							System.out.println(s);
+							if(!s.equals("add bing praise successfully!")){
+								JOptionPane.showMessageDialog(null,"你已经点过赞了，不要重复点击!", "系统信息", JOptionPane.ERROR_MESSAGE);
+							}
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -526,6 +540,9 @@ public class UI {
 							toServer.writeUTF(UI3.uid);
 							String s=fromServer.readUTF();
 							System.out.println(s);
+							if(!s.equals("bing delpraise successfully!")){
+								JOptionPane.showMessageDialog(null,"你已经点过赞了，不要重复点击!", "系统信息", JOptionPane.ERROR_MESSAGE);
+							}
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -550,8 +567,10 @@ public class UI {
 			//textArea_3.setText("输入不合法，请输入英文单词！");
 			flag=false;
 		}
-	
-		if(type==1 && flag==false){
+		if(flag==false){
+			JOptionPane.showMessageDialog(null,"输入不合法，请输入英文单词！", "error", JOptionPane.ERROR_MESSAGE);
+		}
+		/**if(type==1 && flag==false){
 			textArea_1.setText("输入不合法，请输入英文单词！");
 		}
 		if(type==2 && flag==false){
@@ -581,20 +600,22 @@ public class UI {
 			textArea_1.setText("输入不合法，请输入英文单词！");
 			textArea_2.setText("输入不合法，请输入英文单词！");
 			textArea_3.setText("输入不合法，请输入英文单词！");
-		}
+		}*/
 		try{
 			//Socket socket=new Socket("localhost",8000);
 			fromServer=new DataInputStream(socket.getInputStream());
 			toServer=new DataOutputStream(socket.getOutputStream());
 			toServer.writeInt(1);
     		toServer.writeUTF(inputWord);
+    		numzanjinshan=fromServer.readInt();
+    		numzanyoudao=fromServer.readInt();
+    		numzanbing=fromServer.readInt();
     		toServer.writeInt(type);
 			toServer.flush();
 			
-			/*
-			Statement statement2 = DataBase.connect().createStatement();
+			/*Statement statement2 = DataBase.connect().createStatement();
 			ResultSet resultSet2=statement2.executeQuery("select * from dictionary where Word='"+inputWord+"'");
-			//int numzanjinshan,numzanyoudao,numzanbing;
+			//int numzanbaidu,numzanyoudao,numzanbing;
 			while(resultSet2.next()){
 				numzanjinshan=resultSet2.getInt(2);
 				numzanyoudao=resultSet2.getInt(3);
@@ -635,7 +656,7 @@ public class UI {
 			result=fromServer.readUTF();
 			textArea_1.setText(result);
 		}
-		if(type==2 && flag==true){
+		else if(type==2 && flag==true){
 			label.setVisible(false);
 			scrollPane.setVisible(false);
 			textArea_1.setVisible(false);
@@ -669,7 +690,7 @@ public class UI {
 			result=fromServer.readUTF();
 			textArea_2.setText(result);
 		}
-		if(type==3 && flag==true){
+		else if(type==3 && flag==true){
 
 			label.setVisible(false);
 			scrollPane.setVisible(false);
@@ -705,17 +726,13 @@ public class UI {
 			textArea_3.setText(result);
 
 		}
-		if((type==4 || type==8) && flag==true){
+		else if((type==4 || type==8) && flag==true){
             label.setVisible(true);
             scrollPane.setVisible(true);
             textArea_1.setVisible(true);
             btnSend.setVisible(true);
             btnGood.setVisible(true);
             btnBad.setVisible(true);
-            
-//            btnSend.setVisible(false);
-//            btnGood.setVisible(false);
-//            btnBad.setVisible(false);
             
             label_1.setVisible(true);
             scrollPane_1.setVisible(true);
@@ -755,7 +772,7 @@ public class UI {
     			button_2.setBounds(421, 230, 61, 49);
                 }
 
-            if(numzanjinshan>=numzanbing && numzanbing>=numzanyoudao){
+            else if(numzanjinshan>=numzanbing && numzanbing>=numzanyoudao){
                 label.setBounds(10, 64, 54, 15);
     			scrollPane.setBounds(20, 79, 341, 48);
     			textArea_1.setBounds(20, 79, 341, 48);
@@ -778,7 +795,7 @@ public class UI {
     			button.setBounds(421, 230, 61, 49);
                 }
 
-            if(numzanyoudao>=numzanjinshan && numzanjinshan>=numzanbing){
+            else if(numzanyoudao>=numzanjinshan && numzanjinshan>=numzanbing){
                 label_1.setBounds(10, 64, 54, 15);
     			scrollPane_1.setBounds(20, 79, 341, 48);
     			textArea_2.setBounds(20, 79, 341, 48);
@@ -801,7 +818,7 @@ public class UI {
     			button_2.setBounds(421, 230, 61, 49);
                 }
 
-            if(numzanyoudao>=numzanbing && numzanbing>=numzanjinshan){
+            else if(numzanyoudao>=numzanbing && numzanbing>=numzanjinshan){
                 label_1.setBounds(10, 64, 54, 15);
     			scrollPane_1.setBounds(20, 79, 341, 48);
     			textArea_2.setBounds(20, 79, 341, 48);
@@ -824,7 +841,7 @@ public class UI {
     			btnSend.setBounds(421, 230, 61, 49);
                 }
 
-            if(numzanbing>=numzanjinshan && numzanjinshan>=numzanyoudao){
+            else if(numzanbing>=numzanjinshan && numzanjinshan>=numzanyoudao){
                 label_2.setBounds(10, 64, 54, 15);
     			scrollPane_2.setBounds(20, 79, 341, 48);
     			textArea_3.setBounds(20, 79, 341, 48);
@@ -846,7 +863,7 @@ public class UI {
     			button_1.setBounds(373, 254, 45, 23);
     			button.setBounds(421, 230, 61, 49);
                 }
-            if(numzanbing>=numzanyoudao && numzanyoudao>=numzanjinshan){
+            else if(numzanbing>=numzanyoudao && numzanyoudao>=numzanjinshan){
                 label_2.setBounds(10, 64, 54, 15);
     			scrollPane_2.setBounds(20, 79, 341, 48);
     			textArea_3.setBounds(20, 79, 341, 48);
@@ -884,7 +901,7 @@ public class UI {
 			result3=fromServer.readUTF();
 			textArea_3.setText(result3);
 		}
-		if(type==5 && flag==true){
+		else if(type==5 && flag==true){
             label.setVisible(true);
             scrollPane.setVisible(true);
             textArea_1.setVisible(true);
@@ -948,7 +965,7 @@ public class UI {
 			result2=fromServer.readUTF();
 			textArea_2.setText(result2);
 		}
-		if(type==6 && flag==true){
+		else if(type==6 && flag==true){
             label.setVisible(true);
             scrollPane.setVisible(true);
             textArea_1.setVisible(true);
@@ -1012,7 +1029,7 @@ public class UI {
 			result3=fromServer.readUTF();
 			textArea_3.setText(result3);
 		}
-		if(type==7 && flag==true){
+		else if(type==7 && flag==true){
             label.setVisible(false);
             scrollPane.setVisible(false);
             textArea_1.setVisible(false);

@@ -48,13 +48,13 @@ public class DictionaryManager {
 				sql = "insert into BingPraise(username,Word) values('"+ username + "','"+ word + "');";
 			change = statement.execute(sql);
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null,
-				       "你已经点过赞了，不要重复点击!", "系统信息", JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(null,
+			//	       "你已经点过赞了，不要重复点击!", "系统信息", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		finally{
 			DataBase.close(conn);
-			return true;
+			return change;
 		}
 		
 	}
@@ -74,13 +74,13 @@ public class DictionaryManager {
 			
 			change=statement.execute(sql);
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null,
-				       "你还没点过赞", "系统信息", JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(null,
+			//	       "你还没点过赞", "系统信息", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		finally{
 			DataBase.close(conn);
 		}
-		return true;
+		return change;
 	}
 }

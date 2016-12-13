@@ -15,7 +15,8 @@ public class DataBase {
 		"?useUnicode=true&characterEncoding=utf8";
     //用户名和密码
     private static String user = "root";
-    private static String password = "kmjjmz0109";
+    //private static String password = "kmjjmz0109";
+    private static String password = "yq157434";
     //连接句柄
     private static DataBaseConnectionPool dBPool = new DataBaseConnectionPool("Local", driver, url,
     		user, password, 1000);

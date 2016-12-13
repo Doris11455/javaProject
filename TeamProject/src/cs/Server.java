@@ -19,6 +19,7 @@ import ClientUI.UI3;
 public class Server extends JFrame{
 	private JTextArea jta=new JTextArea();
 	private static Connection conn = null;
+	public static int numzanjinshan,numzanyoudao,numzanbing;
 	public static void main(String[] args){
 		new Server();
 		
@@ -32,6 +33,7 @@ public class Server extends JFrame{
 		setVisible(true);
 		
 		try{
+			//服务器监听
 			ServerSocket serverSocket=new ServerSocket(8000);
 			jta.append("Server started at" + new Date()+'\n');
 			int clientNo=1;
@@ -67,7 +69,19 @@ public class Server extends JFrame{
 					if(requesttype==1){//服务器接收来自客户端的在网络查词的申请
 						jta.append("receive  SEARCH WORD request  "+'\n');
 					String inputword=inputFromClient.readUTF();
+					conn = DataBase.connect();
+					Statement statement = conn.createStatement();
+					ResultSet resultSet=statement.executeQuery("select * from dictionary where Word='"+inputword+"'");
+					while(resultSet.next()){
+						numzanjinshan=resultSet.getInt(2);
+						numzanyoudao=resultSet.getInt(3);
+						numzanbing=resultSet.getInt(4);
+					}
+					outputToClient.writeInt(numzanjinshan);
+					outputToClient.writeInt(numzanyoudao);
+					outputToClient.writeInt(numzanbing);
 					int TYPE=inputFromClient.readInt();
+					
 					String result=" ";
 					String result2=" ";
 					String result3=" ";
@@ -145,8 +159,7 @@ public class Server extends JFrame{
 					if(requesttype==2){  //服务器接收来自客户端的新的单词加入数据库的申请
 						jta.append("receive ADD WORD TO DATABASE request "+'\n');
 						String inputword=inputFromClient.readUTF();
-						conn=DataBase.connect();
-						Statement statement =conn.createStatement();
+						Statement statement = DataBase.connect().createStatement();
 						ResultSet resultSet=statement.executeQuery("select 1 from dictionary where Word='"+inputword+"'");
 						//对是否已在数据库进行判断
 						if(!resultSet.next()){
@@ -225,6 +238,7 @@ public class Server extends JFrame{
 						if(UserManager.identityVerify(uid, pw)==true){
 							jta.append("log in successfully!  "+'\n');
 							outputToClient.writeUTF("log in successfully!");
+							UserManager.login(uid);
 							}
 						else{
 							jta.append("log in failed! "+'\n');
@@ -236,7 +250,14 @@ public class Server extends JFrame{
 						String uid=inputFromClient.readUTF();
 						String oldpw=inputFromClient.readUTF();
 						String newpw=inputFromClient.readUTF();
-						
+						if(UserManager.changePassword(uid, oldpw, newpw)==true){
+							jta.append("modify password successfully!  "+'\n');
+							outputToClient.writeUTF("modify password successfully!");
+						}
+						else{
+							jta.append("modify password failed!  "+'\n');
+							outputToClient.writeUTF("modify password failed!");
+						}
 					}
 					if(requesttype==8){//服务器接收来自客户端的添加好友申请
 						jta.append("receive ADD FRIENDS request   "+'\n');
@@ -251,7 +272,14 @@ public class Server extends JFrame{
 						}
 						else{
 							jta.append("search the user successfully! "+'\n');
-							outputToClient.writeUTF("search the user successfully! ");
+							//outputToClient.writeUTF("search the user successfully! ");
+							resultSet=statement.executeQuery("select 1 from Login where username='"+usid+"'");
+							if(!resultSet.next()){
+								jta.append("the user is offline,I'll send the message when he is online!"+'\n');
+							}
+							else{
+								jta.append("I'm sending the message to the user");
+							}
 						}
 					}
 					
